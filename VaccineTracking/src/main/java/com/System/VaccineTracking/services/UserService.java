@@ -1,8 +1,6 @@
 package com.System.VaccineTracking.services;
 
 import com.System.VaccineTracking.dtos.UserDto;
-import com.System.VaccineTracking.exceptions.ErrorMessageCode;
-import com.System.VaccineTracking.exceptions.VaccineTrackingAPIException;
 import com.System.VaccineTracking.models.Users;
 import com.System.VaccineTracking.repos.UserRepo;
 import java.util.Optional;
@@ -17,17 +15,13 @@ public class UserService extends BaseService {
 
     public UserDto getUserInfo(String nationalId) {
         Users user = userRepo.findByNationalId(nationalId)
-                             .orElseThrow(() -> new VaccineTrackingAPIException(
-                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                                 new String[]{"National ", "ID", nationalId}));
+                             .orElseThrow(() -> new RuntimeException("not found" + nationalId));
         return modelMapper.map(user, UserDto.class);
     }
 
     public UserDto addUserInfo(UserDto userDto, String nationalId) {
         Users user = userRepo.findByNationalId(nationalId)
-                             .orElseThrow(() -> new VaccineTrackingAPIException(
-                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                                 new String[]{"National ", "ID", nationalId}));
+                             .orElseThrow(() -> new RuntimeException("not found" + nationalId));
         user.setFullName(userDto.getFullName());
         user.setGender(userDto.getGender());
         user.setAge(userDto.getAge());
@@ -41,18 +35,14 @@ public class UserService extends BaseService {
 
     public void deleteUserInfo(String nationalId) {
         Users user = userRepo.findByNationalId(nationalId)
-                             .orElseThrow(() -> new VaccineTrackingAPIException(
-                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                                 new String[]{"National ", "ID", nationalId}));
+                             .orElseThrow(() -> new RuntimeException("not found" + nationalId));
         user.setDeleted(true);
         userRepo.save(user);
     }
 
     public UserDto updateUserInfo(UserDto userDto, String nationalId) {
         Users user = userRepo.findByNationalId(nationalId)
-                             .orElseThrow(() -> new VaccineTrackingAPIException(
-                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                                 new String[]{"National ", "ID", nationalId}));
+                             .orElseThrow(() -> new RuntimeException("not found" + nationalId));
         Optional.ofNullable(userDto.getFullName()).ifPresent(user::setFullName);
         Optional.ofNullable(userDto.getAge()).ifPresent(user::setAge);
         Optional.ofNullable(userDto.getGovernorate()).ifPresent(user::setGovernorate);
