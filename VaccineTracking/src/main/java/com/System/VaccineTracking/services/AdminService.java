@@ -24,11 +24,12 @@ public class AdminService extends BaseService{
     }
 
     public void deleteUserInfo(String nationalId) {
-        if (!userRepo.existsByNationalId(nationalId)) {
-            throw new VaccineTrackingAPIException(ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                new String[]{"National", "ID", nationalId});
-        }
-        userRepo.deleteByNationalId(nationalId);
+        Users user = userRepo.findByNationalId(nationalId)
+                             .orElseThrow(() -> new VaccineTrackingAPIException(
+                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
+                                 new String[]{"National ", "ID", nationalId}));
+        user.setDeleted(true);
+        userRepo.save(user);
     }
 
     public List<UserDto> getUserByNumberOfVaccineDoses(int dose) {

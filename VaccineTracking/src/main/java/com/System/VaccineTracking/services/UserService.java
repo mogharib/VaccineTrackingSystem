@@ -40,11 +40,12 @@ public class UserService extends BaseService {
     }
 
     public void deleteUserInfo(String nationalId) {
-        if (!userRepo.existsByNationalId(nationalId)) {
-            throw new VaccineTrackingAPIException(ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                new String[]{"National", "ID", nationalId});
-        }
-        userRepo.deleteByNationalId(nationalId);
+        Users user = userRepo.findByNationalId(nationalId)
+                             .orElseThrow(() -> new VaccineTrackingAPIException(
+                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
+                                 new String[]{"National ", "ID", nationalId}));
+        user.setDeleted(true);
+        userRepo.save(user);
     }
 
     public UserDto updateUserInfo(UserDto userDto, String nationalId) {
@@ -58,6 +59,10 @@ public class UserService extends BaseService {
         Optional.ofNullable(userDto.getPassword()).ifPresent(user::setPassword);
         Optional.ofNullable(userDto.getDoses()).ifPresent(user::setDoses);
         Optional.ofNullable(userDto.getNationalId()).ifPresent(user::setNationalId);
+        if (userDto.getDoses() == 0) {
+            user.setWaitingList(true);
+        }
+        user.setWaitingList(false);
         return modelMapper.map(userRepo.save(user), UserDto.class);
     }
 }

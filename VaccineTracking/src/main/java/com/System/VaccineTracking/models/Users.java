@@ -1,5 +1,6 @@
 package com.System.VaccineTracking.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -16,12 +17,16 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE national_id=?")
+@Where(clause = "deleted=false")
 public class Users{
 
     @Id
@@ -42,6 +47,9 @@ public class Users{
 
     @Column(name = "waiting_list")
     private Boolean waitingList = false;
+
+    @JsonIgnore
+    private boolean deleted;
     @ManyToMany( fetch =  FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(
     name = "user_roles" ,
