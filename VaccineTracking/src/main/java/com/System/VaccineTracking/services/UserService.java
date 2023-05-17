@@ -1,6 +1,7 @@
 package com.System.VaccineTracking.services;
 
 import com.System.VaccineTracking.dtos.UserDto;
+import com.System.VaccineTracking.enums.GenderEnum;
 import com.System.VaccineTracking.models.Users;
 import com.System.VaccineTracking.repos.UserRepo;
 import java.util.Optional;
@@ -24,6 +25,9 @@ public class UserService extends BaseService {
                              .orElseThrow(() -> new RuntimeException("not found" + nationalId));
         user.setFullName(userDto.getFullName());
         user.setGender(userDto.getGender());
+        if(!user.getGender().equals(GenderEnum.MALE.value) || !user.getGender().equals(GenderEnum.MALE.value)) {
+            throw new RuntimeException("Bad Request");
+        }
         user.setAge(userDto.getAge());
         user.setDoses(userDto.getDoses());
         user.setGovernorate(userDto.getGovernorate());
@@ -48,6 +52,10 @@ public class UserService extends BaseService {
         Optional.ofNullable(userDto.getGovernorate()).ifPresent(user::setGovernorate);
         Optional.ofNullable(userDto.getPassword()).ifPresent(user::setPassword);
         Optional.ofNullable(userDto.getDoses()).ifPresent(user::setDoses);
+        Optional.ofNullable(userDto.getGender()).ifPresent(user::setGender);
+        if(!user.getGender().equals(GenderEnum.MALE.value) || !user.getGender().equals(GenderEnum.MALE.value)) {
+            throw new RuntimeException("Bad Request");
+        }
         Optional.ofNullable(userDto.getNationalId()).ifPresent(user::setNationalId);
         if (userDto.getDoses() == 0) {
             user.setWaitingList(true);
