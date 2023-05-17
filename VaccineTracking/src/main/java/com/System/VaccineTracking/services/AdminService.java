@@ -2,8 +2,6 @@ package com.System.VaccineTracking.services;
 
 import com.System.VaccineTracking.dtos.UserDto;
 import com.System.VaccineTracking.enums.GenderEnum;
-import com.System.VaccineTracking.exceptions.ErrorMessageCode;
-import com.System.VaccineTracking.exceptions.VaccineTrackingAPIException;
 import com.System.VaccineTracking.models.Users;
 import com.System.VaccineTracking.repos.UserRepo;
 import java.util.Arrays;
@@ -24,10 +22,7 @@ public class AdminService extends BaseService{
     }
 
     public void deleteUserInfo(String nationalId) {
-        Users user = userRepo.findByNationalId(nationalId)
-                             .orElseThrow(() -> new VaccineTrackingAPIException(
-                                 ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
-                                 new String[]{"National ", "ID", nationalId}));
+        Users user = userRepo.findByNationalId(nationalId).orElseThrow(() -> new RuntimeException("not found" + nationalId));
         user.setDeleted(true);
         userRepo.save(user);
     }
