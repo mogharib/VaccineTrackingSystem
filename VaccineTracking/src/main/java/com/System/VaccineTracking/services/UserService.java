@@ -1,6 +1,7 @@
 package com.System.VaccineTracking.services;
 
 import com.System.VaccineTracking.dtos.UserDto;
+import com.System.VaccineTracking.enums.GenderEnum;
 import com.System.VaccineTracking.exceptions.ErrorMessageCode;
 import com.System.VaccineTracking.exceptions.VaccineTrackingAPIException;
 import com.System.VaccineTracking.models.Users;
@@ -29,7 +30,11 @@ public class UserService extends BaseService {
                                  ErrorMessageCode.RESOURCE_NOT_FOUND_ERROR,
                                  new String[]{"National ", "ID", nationalId}));
         user.setFullName(userDto.getFullName());
+
         user.setGender(userDto.getGender());
+        if(!user.getGender().equals(GenderEnum.MALE.value) || !user.getGender().equals(GenderEnum.MALE.value)) {
+            throw new RuntimeException("Bad Request");
+        }
         user.setAge(userDto.getAge());
         user.setDoses(userDto.getDoses());
         user.setGovernorate(userDto.getGovernorate());
@@ -59,6 +64,10 @@ public class UserService extends BaseService {
         Optional.ofNullable(userDto.getPassword()).ifPresent(user::setPassword);
         Optional.ofNullable(userDto.getDoses()).ifPresent(user::setDoses);
         Optional.ofNullable(userDto.getNationalId()).ifPresent(user::setNationalId);
+        Optional.ofNullable(userDto.getGender()).ifPresent(user::setGender);
+        if(!user.getGender().equals(GenderEnum.MALE.value) || !user.getGender().equals(GenderEnum.MALE.value)) {
+            throw new RuntimeException("Bad Request");
+        }
         if (userDto.getDoses() == 0) {
             user.setWaitingList(true);
         }
